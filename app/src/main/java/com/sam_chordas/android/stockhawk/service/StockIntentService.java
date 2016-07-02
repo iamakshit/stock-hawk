@@ -1,9 +1,13 @@
 package com.sam_chordas.android.stockhawk.service;
 
 import android.app.IntentService;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.android.gms.gcm.TaskParams;
 
 /**
@@ -18,6 +22,15 @@ public class StockIntentService extends IntentService {
   public StockIntentService(String name) {
     super(name);
   }
+  private String LOG_TAG = StockIntentService.class.getSimpleName();
+
+  private android.os.Handler mHandler;
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    mHandler = new Handler();
+
+  }
 
   @Override protected void onHandleIntent(Intent intent) {
     Log.d(StockIntentService.class.getSimpleName(), "Stock Intent Service");
@@ -28,6 +41,16 @@ public class StockIntentService extends IntentService {
     }
     // We can call OnRunTask from the intent service to force it to run immediately instead of
     // scheduling a task.
-    stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
+    final int result = stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
+    Log.i(LOG_TAG, "TaskService result {}"+result);
+
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        if (result == 3) {
+         Toast.makeText(StockIntentService.this, "Given stock does not exist.!!", Toast.LENGTH_LONG).show();
+        }
+      }
+    });
   }
 }

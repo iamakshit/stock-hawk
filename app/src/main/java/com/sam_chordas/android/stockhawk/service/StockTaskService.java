@@ -125,9 +125,15 @@ public class StockTaskService extends GcmTaskService{
               Utils.quoteJsonToContentVals(getResponse));
         }catch (RemoteException | OperationApplicationException e){
           Log.e(LOG_TAG, "Error applying batch insert", e);
+
         }
       } catch (IOException e){
         e.printStackTrace();
+      }
+      catch(NumberFormatException e)
+      {
+        Log.e(LOG_TAG, "Did not get any data for the stock", e);
+        return 3;
       }
     }
 
