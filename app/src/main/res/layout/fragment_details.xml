@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ap="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -8,5 +9,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.sam_chordas.android.stockhawk.ui.DetailsActivityFragment">
 
+    <com.androidplot.xy.XYPlot
+        style="@style/APDefacto.Dark"
+        android:id="@+id/plot"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        ap:label="A Simple XY Plot"
+        ap:rangeLabel="range"
+        ap:domainLabel="domain"/>
 
 </RelativeLayout>
