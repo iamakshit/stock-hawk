@@ -21,6 +21,7 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.utils.Utils;
 
 import java.util.Arrays;
 
@@ -81,7 +82,9 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(int position, long id) {
                 // Do stuff when navigation item is selected
-                  Log.i(TAG, "Item selected "+items[position]); // Debug
+                  Log.i(TAG, "Item selected "+items[position]);
+                Log.i(TAG,"Computed Date =>"+Utils.computeDateByString(items[position]));
+
                 return true;
             }
         };

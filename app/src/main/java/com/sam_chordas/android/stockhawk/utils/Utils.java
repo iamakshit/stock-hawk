@@ -17,7 +17,7 @@ public class Utils {
         return formattedDate;
     }
 
-    public String computeDateByString(String month) {
+    public static String computeDateByString(String month) {
         switch (month) {
             case "1W":
                 return getPreviousDaysDate(7);
