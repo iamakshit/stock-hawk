@@ -38,15 +38,11 @@ public class DetailsActivity extends AppCompatActivity {
 
         // create a couple arrays of y-values to plot:
         Number[] series1Numbers = {1, 4, 2, 8, 4, 16, 8, 32, 16, 64};
-        Number[] series2Numbers = {5, 2, 10, 5, 20, 10, 40, 20, 80, 40};
 
         // turn the above arrays into XYSeries':
         // (Y_VALS_ONLY means use the element index as the x value)
         XYSeries series1 = new SimpleXYSeries(Arrays.asList(series1Numbers),
                 SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
-
-      //  XYSeries series2 = new SimpleXYSeries(Arrays.asList(series2Numbers),
-        //        SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series2");
 
         // create formatters to use for drawing a series using LineAndPointRenderer
         // and configure them from xml:
@@ -61,9 +57,6 @@ public class DetailsActivity extends AppCompatActivity {
         series1Format.setInterpolationParams(
                 new CatmullRomInterpolator.Params(10, CatmullRomInterpolator.Type.Centripetal));
 
-      //  series2Format.setInterpolationParams(
-        //        new CatmullRomInterpolator.Params(10, CatmullRomInterpolator.Type.Centripetal));
-
         // add a new series' to the xyplot:
         plot.addSeries(series1, series1Format);
         //plot.addSeries(series2, series2Format);
@@ -73,7 +66,6 @@ public class DetailsActivity extends AppCompatActivity {
 
         // rotate domain labels 45 degrees to make them more compact horizontally:
         plot.getGraphWidget().setDomainLabelOrientation(-45);
-
     }
 
     @Override
