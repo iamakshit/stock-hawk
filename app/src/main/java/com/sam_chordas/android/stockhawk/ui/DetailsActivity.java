@@ -54,10 +54,6 @@ public class DetailsActivity extends AppCompatActivity {
         series1Format.setPointLabelFormatter(new PointLabelFormatter());
         series1Format.configure(getApplicationContext(), R.xml.line_point_formatter_with_labels);
 
-      //  LineAndPointFormatter series2Format = new LineAndPointFormatter();
-       // series2Format.setPointLabelFormatter(new PointLabelFormatter());
-     //   series2Format.configure(getApplicationContext(), R.xml.line_point_formatter_with_labels_2);
-
         // add an "dash" effect to the series2 line:
 
         // just for fun, add some smoothing to the lines:
