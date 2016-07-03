@@ -45,7 +45,7 @@ public class DetailsActivity extends AppCompatActivity {
         // Action Bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setListNavigationCallbacks(adapter, callback);
         actionBar.setTitle(getTitle());
 
