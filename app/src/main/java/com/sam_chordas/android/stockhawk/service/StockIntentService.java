@@ -1,7 +1,6 @@
 package com.sam_chordas.android.stockhawk.service;
 
 import android.app.IntentService;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,7 +41,6 @@ public class StockIntentService extends IntentService {
     // We can call OnRunTask from the intent service to force it to run immediately instead of
     // scheduling a task.
     final int result = stockTaskService.onRunTask(new TaskParams(intent.getStringExtra("tag"), args));
-    Log.i(LOG_TAG, "TaskService result {}"+result);
 
     mHandler.post(new Runnable() {
       @Override
