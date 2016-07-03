@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="order">
-        <item>M</item>
-        <item>A</item>
-        <item>R</item>
+        <item>1W</item>
+        <item>1M</item>
+        <item>3M</item>
+        <item>6M</item>
+        <item>1Y</item>
     </string-array>
 </resources>
