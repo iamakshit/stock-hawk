@@ -1,4 +1,4 @@
-package com.sam_chordas.android.stockhawk.utils;
+package com.sam_chordas.android.stockhawk.rest;
 
 
 import java.text.SimpleDateFormat;
@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Created by akshitgupta on 03/07/16.
  */
-public class Utils {
+public class DateUtils {
 
     public static String getCurrentDate() {
         Calendar cal = Calendar.getInstance();

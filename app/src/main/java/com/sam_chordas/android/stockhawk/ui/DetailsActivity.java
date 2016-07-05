@@ -1,19 +1,13 @@
 package com.sam_chordas.android.stockhawk.ui;
 
-import android.graphics.DashPathEffect;
 import android.os.Bundle;
-import android.app.Activity;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
-import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.CatmullRomInterpolator;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.PointLabelFormatter;
@@ -21,7 +15,7 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.utils.Utils;
+import com.sam_chordas.android.stockhawk.rest.DateUtils;
 
 import java.util.Arrays;
 
@@ -83,7 +77,7 @@ public class DetailsActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(int position, long id) {
                 // Do stuff when navigation item is selected
                   Log.i(TAG, "Item selected "+items[position]);
-                Log.i(TAG,"Computed Date =>"+Utils.computeDateByString(items[position]));
+                Log.i(TAG,"Computed Date =>"+ DateUtils.computeDateByString(items[position]));
 
                 return true;
             }
