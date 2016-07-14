@@ -7,15 +7,17 @@ import com.google.android.gms.gcm.TaskParams;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-
+import android.util.Log;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 /**
  * Created by akshitgupta on 03/07/16.
  */
-public class StockHistoricalDataTask extends AsyncTask<TaskParams, Void,Void> {
+public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, Void,Void> {
+    private String LOG_TAG = StockHistoricalDataTask.class.getSimpleName();
 
     private OkHttpClient client = new OkHttpClient();
     String fetchData(String url) throws IOException {
@@ -27,12 +29,13 @@ public class StockHistoricalDataTask extends AsyncTask<TaskParams, Void,Void> {
         return response.body().string();
     }
     @Override
-    protected Void doInBackground(TaskParams... params) {
-        TaskParams taskParams = params[0];
+    protected Void doInBackground(HashMap<String, String>... params) {
+       // TaskParams taskParams = params[0];
+        HashMap<String,String> map = params[0];
         StringBuilder urlStringBuilder = new StringBuilder();
-        String stockInput = taskParams.getExtras().getString("symbol");
-        String startDate = taskParams.getExtras().getString("startDate");
-        String endDate = taskParams.getExtras().getString("endDate");
+        String stockInput = map.get("symbol");
+        String startDate = map.get("startDate");
+        String endDate = map.get("endDate");
         urlStringBuilder.append("https://query.yahooapis.com/v1/public/yql?q=");
         try {
             urlStringBuilder.append(URLEncoder.encode("select * from yahoo.finance.historicaldata where symbol = ", "UTF-8"));
@@ -44,7 +47,7 @@ public class StockHistoricalDataTask extends AsyncTask<TaskParams, Void,Void> {
         urlStringBuilder.append("\""+startDate+"\"");
         urlStringBuilder.append("and endDate = ");
         urlStringBuilder.append("\""+endDate+"\"");
-
+        urlStringBuilder.append("&env=http://datatables.org/alltables.env");
         String urlString;
         String getResponse;
         int result = GcmNetworkManager.RESULT_FAILURE;
@@ -52,6 +55,7 @@ public class StockHistoricalDataTask extends AsyncTask<TaskParams, Void,Void> {
             urlString = urlStringBuilder.toString();
             try {
                 getResponse = fetchData(urlString);
+                Log.i(LOG_TAG, " Response : "+getResponse);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,4 +63,5 @@ public class StockHistoricalDataTask extends AsyncTask<TaskParams, Void,Void> {
         }
             return null;
     }
+
 }

@@ -1,5 +1,7 @@
 package com.sam_chordas.android.stockhawk.ui;
 
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +18,17 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.rest.DateUtils;
+import com.sam_chordas.android.stockhawk.service.task.StockHistoricalDataTask;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -61,6 +72,8 @@ public class DetailsActivity extends AppCompatActivity {
 
         // rotate domain labels 45 degrees to make them more compact horizontally:
         plot.getGraphWidget().setDomainLabelOrientation(-45);
+
+        fetchStockHistoricalData();
     }
 
     @Override
@@ -92,4 +105,39 @@ public class DetailsActivity extends AppCompatActivity {
 
         return true;
     }
+
+    public void fetchStockHistoricalData() {
+
+        ArrayList<String> list = new ArrayList<String>();
+        StockHistoricalDataTask task;
+        task = new StockHistoricalDataTask();
+        int corePoolSize = 60;
+        int maximumPoolSize = 80;
+        int keepAliveTime = 10;
+        BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(maximumPoolSize);
+        Executor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
+        Log.i("DetailsActivity", "Refresh Action being called");
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put("symbol","YHOO");
+        map.put("startDate","2016-03-01");
+        map.put("endDate","2016-04-01");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,map);
+        else
+            task.execute(map);
+      //  try {
+            //result = task.get();
+           // Log.i("DetailsActivity", "MovieReviewResult :  " + result);
+
+      //  } catch (InterruptedException e) {
+       //     e.printStackTrace();
+       // } catch (ExecutionException e) {
+       //     e.printStackTrace();
+        //}
+
+        //  movie.setYouTubeVideoLink(result);
+        //return list;
+    }
+
 }
