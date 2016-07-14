@@ -1,5 +1,6 @@
 package com.sam_chordas.android.stockhawk.ui;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +23,10 @@ import com.sam_chordas.android.stockhawk.service.task.StockHistoricalDataTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -73,7 +77,10 @@ public class DetailsActivity extends AppCompatActivity {
         // rotate domain labels 45 degrees to make them more compact horizontally:
         plot.getGraphWidget().setDomainLabelOrientation(-45);
 
-        fetchStockHistoricalData();
+        Intent intent = getIntent();
+        String symbol = intent.getStringExtra("symbol");
+        dumpIntent(intent);
+        fetchStockHistoricalData(symbol);
     }
 
     @Override
@@ -106,7 +113,7 @@ public class DetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    public void fetchStockHistoricalData() {
+    public void fetchStockHistoricalData(String symbol) {
 
         ArrayList<String> list = new ArrayList<String>();
         StockHistoricalDataTask task;
@@ -119,9 +126,12 @@ public class DetailsActivity extends AppCompatActivity {
         Log.i("DetailsActivity", "Refresh Action being called");
 
         HashMap<String,String> map = new HashMap<>();
-        map.put("symbol","YHOO");
+        String endDate = DateUtils.getCurrentDate();
+        Log.i(TAG,"endDate = "+endDate+" symbol = "+symbol);
+
+        map.put("symbol",symbol);
         map.put("startDate","2016-03-01");
-        map.put("endDate","2016-04-01");
+        map.put("endDate",endDate);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,map);
         else
@@ -138,6 +148,21 @@ public class DetailsActivity extends AppCompatActivity {
 
         //  movie.setYouTubeVideoLink(result);
         //return list;
+    }
+
+    public static void dumpIntent(Intent i){
+
+        Bundle bundle = i.getExtras();
+        if (bundle != null) {
+            Set<String> keys = bundle.keySet();
+            Iterator<String> it = keys.iterator();
+            Log.e(TAG,"Dumping Intent start");
+            while (it.hasNext()) {
+                String key = it.next();
+                Log.e(TAG,"[" + key + "=" + bundle.get(key)+"]");
+            }
+            Log.e(TAG,"Dumping Intent end");
+        }
     }
 
 }

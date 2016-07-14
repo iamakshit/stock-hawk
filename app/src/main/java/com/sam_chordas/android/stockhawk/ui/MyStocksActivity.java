@@ -87,6 +87,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 //TODO:
                 // do something on item click
                 mServiceIntent.putExtra("tag", "display");
+                mServiceIntent.putExtra("symbol","YHOO");
                 startService(mServiceIntent);
               }
             }));
