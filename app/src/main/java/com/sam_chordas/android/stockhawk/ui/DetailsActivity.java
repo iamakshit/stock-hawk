@@ -23,9 +23,7 @@ import com.sam_chordas.android.stockhawk.rest.DateUtils;
 import com.sam_chordas.android.stockhawk.service.task.StockHistoricalDataTask;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -40,31 +38,37 @@ public class DetailsActivity extends AppCompatActivity {
 
     public static String TAG = DetailsActivity.class.getSimpleName();
     private XYPlot plot;
+    private String optionMenuOption="1W";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+        plotChart();
 
-        plot = (XYPlot) findViewById(R.id.plot);
+    }
+
+    public void plotChart()
+    {
+         plot = (XYPlot) findViewById(R.id.plot);
+
         Intent intent = getIntent();
         String symbol = intent.getStringExtra("symbol");
-        ArrayList<StockHistoricalData> stockHistoricalDatas= fetchStockHistoricalData(symbol);
+        Log.i(TAG,"optionMenuOption ="+optionMenuOption);
+
+        ArrayList<StockHistoricalData> stockHistoricalDatas= fetchStockHistoricalData(symbol,optionMenuOption);
         Log.i(TAG,"stockHistoricalDatas :: size "+stockHistoricalDatas.size());
 
         // create a couple arrays of y-values to plot:
         ArrayList<Number> series1Numbers = new ArrayList<>();
-      //  int i=0;
-       Collections.reverse(stockHistoricalDatas);
+        Collections.reverse(stockHistoricalDatas);
         for(StockHistoricalData stockHistoricalData:stockHistoricalDatas)
         {
             Log.i(TAG,"Date {}"+stockHistoricalData.getDate());
             series1Numbers.add(stockHistoricalData.getValue());
-       //     ++i;
         }
 
-        Log.i(TAG,"series1Numbers size = "+series1Numbers.size());
-     //   Log.i(TAG,"series1Numbers string = "+series1Numbers.toString());
+       // Log.i(TAG,"series1Numbers size = "+series1Numbers.size());
 
         // turn the above arrays into XYSeries':
         // (Y_VALS_ONLY means use the element index as the x value)
@@ -110,8 +114,12 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(int position, long id) {
                 // Do stuff when navigation item is selected
-                  Log.i(TAG, "Item selected "+items[position]);
+                optionMenuOption = items[position];
+                Log.i(TAG, "Item selected "+items[position]);
                 Log.i(TAG,"Computed Date =>"+ DateUtils.computeDateByString(items[position]));
+                plot.clear();
+                plotChart();
+                plot.redraw();
                 return true;
             }
         };
@@ -126,10 +134,10 @@ public class DetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    public  ArrayList<StockHistoricalData>  fetchStockHistoricalData(String symbol) {
-
+    public  ArrayList<StockHistoricalData>  fetchStockHistoricalData(String symbol,String startDateOption) {
+        String startDate = DateUtils.computeDateByString(startDateOption);
+        Log.i(TAG,"startDate ==> "+startDate);
         ArrayList<String> list = new ArrayList<String>();
-      //  Log.i(TAG,"Calling task");
         StockHistoricalDataTask task;
         task = new StockHistoricalDataTask();
         int corePoolSize = 60;
@@ -137,14 +145,13 @@ public class DetailsActivity extends AppCompatActivity {
         int keepAliveTime = 10;
         BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(maximumPoolSize);
         Executor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
-       // Log.i("DetailsActivity", "Refresh Action being called");
 
         HashMap<String,String> map = new HashMap<>();
         String endDate = DateUtils.getCurrentDate();
         Log.i(TAG, "endDate = " + endDate + " symbol = " + symbol);
 
-        map.put("symbol",symbol);
-        map.put("startDate", "2016-07-01");
+        map.put("symbol", symbol);
+        map.put("startDate", startDate);
         map.put("endDate", endDate);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, map);

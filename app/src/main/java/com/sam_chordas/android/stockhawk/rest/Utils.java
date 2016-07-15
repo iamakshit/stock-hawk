@@ -1,8 +1,8 @@
 package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.ContentProviderOperation;
-import android.text.format.*;
 import android.util.Log;
+
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.objects.StockHistoricalData;
@@ -19,115 +19,112 @@ import org.json.JSONObject;
  */
 public class Utils {
 
-  private static String LOG_TAG = Utils.class.getSimpleName();
+    private static String LOG_TAG = Utils.class.getSimpleName();
 
-  public static boolean showPercent = true;
+    public static boolean showPercent = true;
 
-  public static ArrayList quoteJsonToContentVals(String JSON,String dataType){
-    ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
-    ArrayList<StockHistoricalData> stockHistoricalDatas = new ArrayList<>();
+    public static ArrayList quoteJsonToContentVals(String JSON, String dataType) {
+        ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
+        ArrayList<StockHistoricalData> stockHistoricalDatas = new ArrayList<>();
 
-    JSONObject jsonObject = null;
-    JSONArray resultsArray = null;
-    try{
-      jsonObject = new JSONObject(JSON);
-      if (jsonObject != null && jsonObject.length() != 0){
-        jsonObject = jsonObject.getJSONObject("query");
-        int count = Integer.parseInt(jsonObject.getString("count"));
-        if (count == 1){
-          jsonObject = jsonObject.getJSONObject("results")
-              .getJSONObject("quote");
-          batchOperations.add(buildBatchOperation(jsonObject));
-        } else{
-          resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+        JSONObject jsonObject = null;
+        JSONArray resultsArray = null;
+        try {
+            jsonObject = new JSONObject(JSON);
+            if (jsonObject != null && jsonObject.length() != 0) {
+                jsonObject = jsonObject.getJSONObject("query");
+                int count = Integer.parseInt(jsonObject.getString("count"));
+                if (count == 1) {
+                    jsonObject = jsonObject.getJSONObject("results")
+                            .getJSONObject("quote");
+                    batchOperations.add(buildBatchOperation(jsonObject));
+                } else {
+                    resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
 
-          if (resultsArray != null && resultsArray.length() != 0){
-           // Log.i(LOG_TAG, " Count = " + resultsArray.length());
-            for (int i = 0; i < resultsArray.length(); i++) {
-              jsonObject = resultsArray.getJSONObject(i);
-              // Log.i(LOG_TAG,"JSONObject to string "+i+" "+jsonObject.toString());
-              if (dataType.equals("historicalData"))
-              {
-              //  Log.i(LOG_TAG, " Inside itself ");
-                StockHistoricalData stockHistoricalData = fetchHistoricalData(jsonObject);
-                stockHistoricalDatas.add(stockHistoricalData);
-              }
-              else {
-                batchOperations.add(buildBatchOperation(jsonObject));
-              }
+                    if (resultsArray != null && resultsArray.length() != 0) {
+                        // Log.i(LOG_TAG, " Count = " + resultsArray.length());
+                        for (int i = 0; i < resultsArray.length(); i++) {
+                            jsonObject = resultsArray.getJSONObject(i);
+                            // Log.i(LOG_TAG,"JSONObject to string "+i+" "+jsonObject.toString());
+                            if (dataType.equals("historicalData")) {
+                                //  Log.i(LOG_TAG, " Inside itself ");
+                                StockHistoricalData stockHistoricalData = fetchHistoricalData(jsonObject);
+                                stockHistoricalDatas.add(stockHistoricalData);
+                            } else {
+                                batchOperations.add(buildBatchOperation(jsonObject));
+                            }
+                        }
+                    }
+                }
             }
-          }
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "String to JSON failed: " + e);
         }
-      }
-    } catch (JSONException e){
-      Log.e(LOG_TAG, "String to JSON failed: " + e);
+        if (dataType.equals("historicalData")) {
+            return stockHistoricalDatas;
+        }
+        return batchOperations;
     }
-    if(dataType.equals("historicalData"))
-    {
-      return stockHistoricalDatas;
+
+    public static String truncateBidPrice(String bidPrice) {
+        bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
+        return bidPrice;
     }
-    return batchOperations;
-  }
 
-  public static String truncateBidPrice(String bidPrice){
-    bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
-    return bidPrice;
-  }
-
-  public static String truncateChange(String change, boolean isPercentChange){
-    String weight = change.substring(0,1);
-    String ampersand = "";
-    if (isPercentChange){
-      ampersand = change.substring(change.length() - 1, change.length());
-      change = change.substring(0, change.length() - 1);
+    public static String truncateChange(String change, boolean isPercentChange) {
+        String weight = change.substring(0, 1);
+        String ampersand = "";
+        if (isPercentChange) {
+            ampersand = change.substring(change.length() - 1, change.length());
+            change = change.substring(0, change.length() - 1);
+        }
+        change = change.substring(1, change.length());
+        double round = (double) Math.round(Double.parseDouble(change) * 100) / 100;
+        change = String.format("%.2f", round);
+        StringBuffer changeBuffer = new StringBuffer(change);
+        changeBuffer.insert(0, weight);
+        changeBuffer.append(ampersand);
+        change = changeBuffer.toString();
+        return change;
     }
-    change = change.substring(1, change.length());
-    double round = (double) Math.round(Double.parseDouble(change) * 100) / 100;
-    change = String.format("%.2f", round);
-    StringBuffer changeBuffer = new StringBuffer(change);
-    changeBuffer.insert(0, weight);
-    changeBuffer.append(ampersand);
-    change = changeBuffer.toString();
-    return change;
-  }
 
-  public static StockHistoricalData fetchHistoricalData(JSONObject jsonObject) {
-    StockHistoricalData stockHistoricalData = null;
+    public static StockHistoricalData fetchHistoricalData(JSONObject jsonObject) {
+        StockHistoricalData stockHistoricalData = null;
 
-    try {
-      String symbol = jsonObject.getString("Symbol");
-      String dateToString = jsonObject.getString("Date");
-      Date date = DateUtils.dateToString(dateToString);
-      String valueString = jsonObject.getString("Close");
-      Float value = Float.valueOf(valueString);
-      Log.i(LOG_TAG, "Symbol = " + symbol + " Date = " + date + " value = " + value);
-       stockHistoricalData = new StockHistoricalData(symbol, dateToString, date,value);
-    } catch (JSONException e) {
-      e.printStackTrace();
+        try {
+            String symbol = jsonObject.getString("Symbol");
+            String dateToString = jsonObject.getString("Date");
+            Date date = DateUtils.dateToString(dateToString);
+            String valueString = jsonObject.getString("Close");
+            Float value = Float.valueOf(valueString);
+            Log.i(LOG_TAG, "Symbol = " + symbol + " Date = " + date + " value = " + value);
+            stockHistoricalData = new StockHistoricalData(symbol, dateToString, date, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return stockHistoricalData;
     }
-    return stockHistoricalData;
-  }
 
-  public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject){
-    ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
-        QuoteProvider.Quotes.CONTENT_URI);
-    try {
-      String change = jsonObject.getString("Change");
-      builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
-      builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
-      builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-          jsonObject.getString("ChangeinPercent"), true));
-      builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
-      builder.withValue(QuoteColumns.ISCURRENT, 1);
-      if (change.charAt(0) == '-'){
-        builder.withValue(QuoteColumns.ISUP, 0);
-      }else{
-        builder.withValue(QuoteColumns.ISUP, 1);
-      }
+    public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
+        ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
+                QuoteProvider.Quotes.CONTENT_URI);
+        try {
+            String change = jsonObject.getString("Change");
+            builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
+            builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
+            builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
+                    jsonObject.getString("ChangeinPercent"), true));
+            builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
+            builder.withValue(QuoteColumns.ISCURRENT, 1);
+            if (change.charAt(0) == '-') {
+                builder.withValue(QuoteColumns.ISUP, 0);
+            } else {
+                builder.withValue(QuoteColumns.ISUP, 1);
+            }
 
-    } catch (JSONException e){
-      e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return builder.build();
     }
-    return builder.build();
-  }
 }
