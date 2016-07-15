@@ -28,7 +28,6 @@ public class DateUtils {
         return date;
     }
 
-
     public static String getCurrentDate() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -70,6 +69,4 @@ public class DateUtils {
         String formattedDate = df.format(cal.getTime());
         return formattedDate;
     }
-
-
 }

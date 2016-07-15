@@ -42,7 +42,7 @@ public class Utils {
           resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
 
           if (resultsArray != null && resultsArray.length() != 0){
-            Log.i(LOG_TAG, " Count = " + resultsArray.length());
+           // Log.i(LOG_TAG, " Count = " + resultsArray.length());
             for (int i = 0; i < resultsArray.length(); i++) {
               jsonObject = resultsArray.getJSONObject(i);
               // Log.i(LOG_TAG,"JSONObject to string "+i+" "+jsonObject.toString());

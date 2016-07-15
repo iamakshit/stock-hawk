@@ -1,20 +1,12 @@
 package com.sam_chordas.android.stockhawk.service.task;
 
-import android.content.ContentProviderOperation;
 import android.os.AsyncTask;
-
 import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.TaskParams;
 import com.sam_chordas.android.stockhawk.objects.StockHistoricalData;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -67,7 +59,7 @@ public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, V
 
             } catch (IOException e) {
                 e.printStackTrace();
-            } 
+            }
             result = GcmNetworkManager.RESULT_SUCCESS;
         }
             return null;

@@ -115,7 +115,7 @@ public class DetailsActivity extends AppCompatActivity {
     public void fetchStockHistoricalData(String symbol) {
 
         ArrayList<String> list = new ArrayList<String>();
-        Log.i(TAG,"Calling task");
+      //  Log.i(TAG,"Calling task");
         StockHistoricalDataTask task;
         task = new StockHistoricalDataTask();
         int corePoolSize = 60;
