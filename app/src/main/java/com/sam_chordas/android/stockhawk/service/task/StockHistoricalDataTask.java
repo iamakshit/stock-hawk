@@ -1,6 +1,8 @@
 package com.sam_chordas.android.stockhawk.service.task;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.sam_chordas.android.stockhawk.objects.StockHistoricalData;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -16,7 +18,7 @@ import java.util.HashMap;
 /**
  * Created by akshitgupta on 03/07/16.
  */
-public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, Void,Void> {
+public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, Void, ArrayList<StockHistoricalData> > {
     private String LOG_TAG = StockHistoricalDataTask.class.getSimpleName();
 
     private OkHttpClient client = new OkHttpClient();
@@ -29,8 +31,8 @@ public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, V
         return response.body().string();
     }
     @Override
-    protected Void doInBackground(HashMap<String, String>... params) {
-       // TaskParams taskParams = params[0];
+    protected  ArrayList<StockHistoricalData>  doInBackground(HashMap<String, String>... params) {
+        ArrayList<StockHistoricalData> batchOperations =  new ArrayList<>();
         HashMap<String,String> map = params[0];
         StringBuilder urlStringBuilder = new StringBuilder();
         String stockInput = map.get("symbol");
@@ -55,14 +57,21 @@ public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, V
             urlString = urlStringBuilder.toString();
             try {
                 getResponse = fetchData(urlString);
-                ArrayList<StockHistoricalData> batchOperations=   Utils.quoteJsonToContentVals(getResponse,"historicalData");
-
+                batchOperations=   Utils.quoteJsonToContentVals(getResponse, "historicalData");
+                Log.i(LOG_TAG, "batchOperations size "+batchOperations);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             result = GcmNetworkManager.RESULT_SUCCESS;
         }
-            return null;
+            return batchOperations;
     }
 
+    @Override
+    protected void onPostExecute (ArrayList<StockHistoricalData>  stockHistoricalDatas){
+        Log.i(LOG_TAG, "Inside onPostExecute method");
+        Log.i(LOG_TAG, "stockHistoricalDatas size "+stockHistoricalDatas.size());
+
+        super.onPostExecute(stockHistoricalDatas);
+    }
 }

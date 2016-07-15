@@ -62,6 +62,10 @@ public class Utils {
     } catch (JSONException e){
       Log.e(LOG_TAG, "String to JSON failed: " + e);
     }
+    if(dataType.equals("historicalData"))
+    {
+      return stockHistoricalDatas;
+    }
     return batchOperations;
   }
 

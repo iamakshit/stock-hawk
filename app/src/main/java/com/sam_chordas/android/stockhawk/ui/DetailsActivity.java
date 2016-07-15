@@ -18,11 +18,13 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.objects.StockHistoricalData;
 import com.sam_chordas.android.stockhawk.rest.DateUtils;
 import com.sam_chordas.android.stockhawk.service.task.StockHistoricalDataTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,13 +47,28 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
 
         plot = (XYPlot) findViewById(R.id.plot);
+        Intent intent = getIntent();
+        String symbol = intent.getStringExtra("symbol");
+        ArrayList<StockHistoricalData> stockHistoricalDatas= fetchStockHistoricalData(symbol);
+        Log.i(TAG,"stockHistoricalDatas :: size "+stockHistoricalDatas.size());
 
         // create a couple arrays of y-values to plot:
-        Number[] series1Numbers = {1, 4, 2, 8, 4, 16, 8, 32, 16, 64};
+        ArrayList<Number> series1Numbers = new ArrayList<>();
+      //  int i=0;
+       Collections.reverse(stockHistoricalDatas);
+        for(StockHistoricalData stockHistoricalData:stockHistoricalDatas)
+        {
+            Log.i(TAG,"Date {}"+stockHistoricalData.getDate());
+            series1Numbers.add(stockHistoricalData.getValue());
+       //     ++i;
+        }
+
+        Log.i(TAG,"series1Numbers size = "+series1Numbers.size());
+     //   Log.i(TAG,"series1Numbers string = "+series1Numbers.toString());
 
         // turn the above arrays into XYSeries':
         // (Y_VALS_ONLY means use the element index as the x value)
-        XYSeries series1 = new SimpleXYSeries(Arrays.asList(series1Numbers),
+        XYSeries series1 = new SimpleXYSeries(series1Numbers,
                 SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
 
         // create formatters to use for drawing a series using LineAndPointRenderer
@@ -77,9 +94,7 @@ public class DetailsActivity extends AppCompatActivity {
         // rotate domain labels 45 degrees to make them more compact horizontally:
         plot.getGraphWidget().setDomainLabelOrientation(-45);
 
-        Intent intent = getIntent();
-        String symbol = intent.getStringExtra("symbol");
-        fetchStockHistoricalData(symbol);
+
     }
 
     @Override
@@ -97,7 +112,6 @@ public class DetailsActivity extends AppCompatActivity {
                 // Do stuff when navigation item is selected
                   Log.i(TAG, "Item selected "+items[position]);
                 Log.i(TAG,"Computed Date =>"+ DateUtils.computeDateByString(items[position]));
-
                 return true;
             }
         };
@@ -112,7 +126,7 @@ public class DetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    public void fetchStockHistoricalData(String symbol) {
+    public  ArrayList<StockHistoricalData>  fetchStockHistoricalData(String symbol) {
 
         ArrayList<String> list = new ArrayList<String>();
       //  Log.i(TAG,"Calling task");
@@ -127,15 +141,25 @@ public class DetailsActivity extends AppCompatActivity {
 
         HashMap<String,String> map = new HashMap<>();
         String endDate = DateUtils.getCurrentDate();
-        Log.i(TAG,"endDate = "+endDate+" symbol = "+symbol);
+        Log.i(TAG, "endDate = " + endDate + " symbol = " + symbol);
 
         map.put("symbol",symbol);
-        map.put("startDate","2016-07-01");
-        map.put("endDate",endDate);
+        map.put("startDate", "2016-07-01");
+        map.put("endDate", endDate);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,map);
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, map);
         else
             task.execute(map);
+
+        try {
+            return task.get();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void dumpIntent(Intent i){
@@ -152,5 +176,4 @@ public class DetailsActivity extends AppCompatActivity {
             Log.e(TAG,"Dumping Intent end");
         }
     }
-
 }
