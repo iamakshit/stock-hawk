@@ -1,6 +1,8 @@
 package com.sam_chordas.android.stockhawk.rest;
 
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,6 +11,23 @@ import java.util.Date;
  * Created by akshitgupta on 03/07/16.
  */
 public class DateUtils {
+
+    public static Date dateToString(String dateString) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try
+        {
+            date = df.parse(dateString);
+            String newDateString = df.format(date);
+            System.out.println(newDateString);
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
 
     public static String getCurrentDate() {
         Calendar cal = Calendar.getInstance();

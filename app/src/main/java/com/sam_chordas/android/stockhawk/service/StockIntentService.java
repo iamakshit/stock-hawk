@@ -37,7 +37,7 @@ public class StockIntentService extends IntentService {
     StockTaskService stockTaskService = new StockTaskService(this);
     Bundle args = new Bundle();
     if (intent.getStringExtra("tag").equals("display")){
-      Log.i(LOG_TAG, "Inside display method");
+     // Log.i(LOG_TAG, "Inside display method");
       Intent myIntent =new Intent(this, DetailsActivity.class);
       myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       myIntent.putExtra("symbol",intent.getStringExtra("symbol"));

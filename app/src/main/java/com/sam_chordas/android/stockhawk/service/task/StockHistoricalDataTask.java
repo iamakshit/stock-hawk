@@ -1,16 +1,24 @@
 package com.sam_chordas.android.stockhawk.service.task;
 
+import android.content.ContentProviderOperation;
 import android.os.AsyncTask;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.TaskParams;
+import com.sam_chordas.android.stockhawk.objects.StockHistoricalData;
+import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -47,7 +55,7 @@ public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, V
         urlStringBuilder.append("\""+startDate+"\"");
         urlStringBuilder.append("and endDate = ");
         urlStringBuilder.append("\""+endDate+"\"");
-        urlStringBuilder.append("&env=http://datatables.org/alltables.env");
+        urlStringBuilder.append("&format=json&diagnostics=true&env=http://datatables.org/alltables.env");
         String urlString;
         String getResponse;
         int result = GcmNetworkManager.RESULT_FAILURE;
@@ -55,10 +63,11 @@ public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, V
             urlString = urlStringBuilder.toString();
             try {
                 getResponse = fetchData(urlString);
-                Log.i(LOG_TAG, " Response : "+getResponse);
+                ArrayList<StockHistoricalData> batchOperations=   Utils.quoteJsonToContentVals(getResponse,"historicalData");
+
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            } 
             result = GcmNetworkManager.RESULT_SUCCESS;
         }
             return null;

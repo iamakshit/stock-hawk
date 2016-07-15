@@ -1,10 +1,15 @@
 package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.ContentProviderOperation;
+import android.text.format.*;
 import android.util.Log;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.objects.StockHistoricalData;
+
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,8 +23,10 @@ public class Utils {
 
   public static boolean showPercent = true;
 
-  public static ArrayList quoteJsonToContentVals(String JSON){
+  public static ArrayList quoteJsonToContentVals(String JSON,String dataType){
     ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
+    ArrayList<StockHistoricalData> stockHistoricalDatas = new ArrayList<>();
+
     JSONObject jsonObject = null;
     JSONArray resultsArray = null;
     try{
@@ -35,9 +42,19 @@ public class Utils {
           resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
 
           if (resultsArray != null && resultsArray.length() != 0){
-            for (int i = 0; i < resultsArray.length(); i++){
+            Log.i(LOG_TAG, " Count = " + resultsArray.length());
+            for (int i = 0; i < resultsArray.length(); i++) {
               jsonObject = resultsArray.getJSONObject(i);
-              batchOperations.add(buildBatchOperation(jsonObject));
+              // Log.i(LOG_TAG,"JSONObject to string "+i+" "+jsonObject.toString());
+              if (dataType.equals("historicalData"))
+              {
+              //  Log.i(LOG_TAG, " Inside itself ");
+                StockHistoricalData stockHistoricalData = fetchHistoricalData(jsonObject);
+                stockHistoricalDatas.add(stockHistoricalData);
+              }
+              else {
+                batchOperations.add(buildBatchOperation(jsonObject));
+              }
             }
           }
         }
@@ -68,6 +85,23 @@ public class Utils {
     changeBuffer.append(ampersand);
     change = changeBuffer.toString();
     return change;
+  }
+
+  public static StockHistoricalData fetchHistoricalData(JSONObject jsonObject) {
+    StockHistoricalData stockHistoricalData = null;
+
+    try {
+      String symbol = jsonObject.getString("Symbol");
+      String dateToString = jsonObject.getString("Date");
+      Date date = DateUtils.dateToString(dateToString);
+      String valueString = jsonObject.getString("Close");
+      Float value = Float.valueOf(valueString);
+      Log.i(LOG_TAG, "Symbol = " + symbol + " Date = " + date + " value = " + value);
+       stockHistoricalData = new StockHistoricalData(symbol, dateToString, date,value);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return stockHistoricalData;
   }
 
   public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject){

@@ -79,7 +79,6 @@ public class DetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String symbol = intent.getStringExtra("symbol");
-        dumpIntent(intent);
         fetchStockHistoricalData(symbol);
     }
 
@@ -116,6 +115,7 @@ public class DetailsActivity extends AppCompatActivity {
     public void fetchStockHistoricalData(String symbol) {
 
         ArrayList<String> list = new ArrayList<String>();
+        Log.i(TAG,"Calling task");
         StockHistoricalDataTask task;
         task = new StockHistoricalDataTask();
         int corePoolSize = 60;
@@ -123,31 +123,19 @@ public class DetailsActivity extends AppCompatActivity {
         int keepAliveTime = 10;
         BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>(maximumPoolSize);
         Executor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, workQueue);
-        Log.i("DetailsActivity", "Refresh Action being called");
+       // Log.i("DetailsActivity", "Refresh Action being called");
 
         HashMap<String,String> map = new HashMap<>();
         String endDate = DateUtils.getCurrentDate();
         Log.i(TAG,"endDate = "+endDate+" symbol = "+symbol);
 
         map.put("symbol",symbol);
-        map.put("startDate","2016-03-01");
+        map.put("startDate","2016-07-01");
         map.put("endDate",endDate);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,map);
         else
             task.execute(map);
-      //  try {
-            //result = task.get();
-           // Log.i("DetailsActivity", "MovieReviewResult :  " + result);
-
-      //  } catch (InterruptedException e) {
-       //     e.printStackTrace();
-       // } catch (ExecutionException e) {
-       //     e.printStackTrace();
-        //}
-
-        //  movie.setYouTubeVideoLink(result);
-        //return list;
     }
 
     public static void dumpIntent(Intent i){
