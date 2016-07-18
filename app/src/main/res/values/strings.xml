@@ -22,5 +22,7 @@
     <string name="init_tag" translatable="false">init</string>
     <string name="periodic_tag" translatable="false">periodic</string>
     <string name="date_format" translatable="false">yyyy-MM-dd</string>
+    <string name="cd_fab_button" translatable="false">Add new stock</string>
+
 
 </resources>
