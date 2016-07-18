@@ -1,7 +1,6 @@
 package com.sam_chordas.android.stockhawk.service.task;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.sam_chordas.android.stockhawk.objects.StockHistoricalData;
@@ -58,7 +57,7 @@ public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, V
             try {
                 getResponse = fetchData(urlString);
                 batchOperations=   Utils.quoteJsonToContentVals(getResponse, "historicalData");
-                Log.i(LOG_TAG, "batchOperations size "+batchOperations);
+             //   Log.i(LOG_TAG, "batchOperations size "+batchOperations);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -69,8 +68,8 @@ public class StockHistoricalDataTask extends AsyncTask<HashMap<String,String>, V
 
     @Override
     protected void onPostExecute (ArrayList<StockHistoricalData>  stockHistoricalDatas){
-        Log.i(LOG_TAG, "Inside onPostExecute method");
-        Log.i(LOG_TAG, "stockHistoricalDatas size "+stockHistoricalDatas.size());
+       // Log.i(LOG_TAG, "Inside onPostExecute method");
+      //  Log.i(LOG_TAG, "stockHistoricalDatas size "+stockHistoricalDatas.size());
 
         super.onPostExecute(stockHistoricalDatas);
     }

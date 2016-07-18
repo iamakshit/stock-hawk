@@ -56,7 +56,6 @@ public class StockIntentService extends IntentService {
       @Override
       public void run() {
         if (result == 3) {
-         Toast.makeText(StockIntentService.this, "Given stock does not exist.!!", Toast.LENGTH_LONG).show();
         }
       }
     });

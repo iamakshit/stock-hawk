@@ -11,7 +11,16 @@
     <string name="input_prefill"></string>
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
     <string name="title_activity_details">Stock Details</string>
-    <string name="string_symbol"  translatable="false">symbol</string>
-    <string name="string_set_background_resource" translatable="false">setBackgroundResource</string>
+    <string name="symbol"  translatable="false">symbol</string>
+    <string name="set_background_resource" translatable="false">setBackgroundResource</string>
+    <string name="stock_already_saved_warning" translatable="false">This stock is already saved!</string>
+    <string name="stock_does_not_exist_warning" translatable="false">Given stock does not exist.!!</string>
+    <string name="tag" translatable="false">tag</string>
+    <string name="data" translatable="false">data</string>
+    <string name="add_tag" translatable="false">add</string>
+    <string name="display_tag" translatable="false">display</string>
+    <string name="init_tag" translatable="false">init</string>
+    <string name="periodic_tag" translatable="false">periodic</string>
+    <string name="date_format" translatable="false">yyyy-MM-dd</string>
 
 </resources>

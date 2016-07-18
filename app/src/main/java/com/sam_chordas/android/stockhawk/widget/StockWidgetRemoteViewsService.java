@@ -70,14 +70,14 @@ public class StockWidgetRemoteViewsService extends RemoteViewsService {
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_collection_item);
 
                 // Bind data to the views
-                Log.d("data",data.getString(data.getColumnIndex(getResources().getString(R.string.string_symbol))));
+                Log.d(getString(R.string.data),data.getString(data.getColumnIndex(QuoteColumns.SYMBOL)));
                 views.setTextViewText(R.id.stock_symbol, data.getString(data.getColumnIndex
-                        (getResources().getString(R.string.string_symbol))));
+                        (getResources().getString(R.string.symbol))));
 
                 if (data.getInt(data.getColumnIndex(QuoteColumns.ISUP)) == 1) {
-                    views.setInt(R.id.change, getResources().getString(R.string.string_set_background_resource), R.drawable.percent_change_pill_green);
+                    views.setInt(R.id.change, getResources().getString(R.string.set_background_resource), R.drawable.percent_change_pill_green);
                 } else {
-                    views.setInt(R.id.change, getResources().getString(R.string.string_set_background_resource), R.drawable.percent_change_pill_red);
+                    views.setInt(R.id.change, getResources().getString(R.string.set_background_resource), R.drawable.percent_change_pill_red);
                 }
 
                 if (Utils.showPercent) {
@@ -87,7 +87,7 @@ public class StockWidgetRemoteViewsService extends RemoteViewsService {
                 }
 
                 final Intent fillInIntent = new Intent();
-                fillInIntent.putExtra(getResources().getString(R.string.string_symbol), data.getString(data.getColumnIndex(QuoteColumns.SYMBOL)));
+                fillInIntent.putExtra(getResources().getString(R.string.symbol), data.getString(data.getColumnIndex(QuoteColumns.SYMBOL)));
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
 
                 return views;
