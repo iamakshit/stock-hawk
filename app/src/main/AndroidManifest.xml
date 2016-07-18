@@ -46,6 +46,21 @@
         <activity
             android:name=".ui.DetailsActivity"
             android:label="@string/title_activity_details"></activity>
+
+        <receiver android:name=".widget.SimpleWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/simple_widget_info" />
+        </receiver>
+        <service
+            android:name=".widget.StockWidgetRemoteViewsService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
     </application>
 
 </manifest>
