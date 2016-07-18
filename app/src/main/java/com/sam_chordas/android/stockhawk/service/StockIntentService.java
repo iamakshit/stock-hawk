@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.TaskParams;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.ui.DetailsActivity;
 
 /**
@@ -56,6 +57,7 @@ public class StockIntentService extends IntentService {
       @Override
       public void run() {
         if (result == 3) {
+          Toast.makeText(StockIntentService.this, getResources().getString(R.string.stock_does_not_exist_warning), Toast.LENGTH_LONG).show();
         }
       }
     });

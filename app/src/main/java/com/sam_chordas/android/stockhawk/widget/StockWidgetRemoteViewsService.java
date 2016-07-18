@@ -70,7 +70,6 @@ public class StockWidgetRemoteViewsService extends RemoteViewsService {
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_collection_item);
 
                 // Bind data to the views
-                Log.d(getString(R.string.data),data.getString(data.getColumnIndex(QuoteColumns.SYMBOL)));
                 views.setTextViewText(R.id.stock_symbol, data.getString(data.getColumnIndex
                         (getResources().getString(R.string.symbol))));
 
